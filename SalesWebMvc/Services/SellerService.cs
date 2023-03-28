@@ -39,9 +39,9 @@ namespace SalesWebMvc.Services
                 await _context.SaveChangesAsync();
 
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                throw new Exception(ex.Message);
+                throw new IntegrityException(ex.Message);
             }
         }
 
