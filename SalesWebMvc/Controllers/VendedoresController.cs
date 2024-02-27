@@ -33,4 +33,37 @@ public class VendedoresController : Controller
         _vendedorServico.Inserir(vendedor);
         return RedirectToAction(nameof(Index));
     }
+    public IActionResult Delete(int ? id)
+    {
+        if(id == null)
+        {
+            return NotFound();
+        }
+        var obj = _vendedorServico.ObterVendedorPorId(id.Value);
+        if(obj == null)
+        {
+            return NotFound();
+        }
+        return View(obj);
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Delete(int id)
+    {
+        _vendedorServico.RemoverVendedor(id);
+        return RedirectToAction(nameof(Index));
+    }
+    public IActionResult Details(int? id)
+    {
+        if(id == null)
+        {
+            return NotFound();
+        }
+        var objs = _vendedorServico.ObterVendedorPorId(id.Value);
+        if (objs == null)
+        {
+            return NotFound();
+        }
+        return View(objs);
+    }
 }
