@@ -9,6 +9,7 @@ public class Vendedor
     public DateTime DataNascimento { get; set; }
     public ICollection<RegistroVendas> Vendas { get; set; } = new List<RegistroVendas>();
     public Departamento Departamento { get; set; }
+    public int DepartamentoId { get; set; }
 
     public Vendedor()
     {

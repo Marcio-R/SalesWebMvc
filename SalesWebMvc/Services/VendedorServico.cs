@@ -15,4 +15,9 @@ public class VendedorServico
     {
         return _context.Vendedor.ToList();
     }
+    public void Inserir(Vendedor vendedores)
+    {
+        _context.Add(vendedores);
+        _context.SaveChanges();
+    }
 }
