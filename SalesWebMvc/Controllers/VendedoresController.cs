@@ -31,17 +31,23 @@ public class VendedoresController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(Vendedor vendedor)
     {
-        _vendedorServico.Inserir(vendedor);
-        return RedirectToAction(nameof(Index));
+        if (!ModelState.IsValid)
+        {
+            var departamento = _departamentoServico.TodosDepartamento();
+            var viewModel = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = departamento };
+            _vendedorServico.Inserir(vendedor);
+            return RedirectToAction(nameof(Index));
+        }
+        return View();
     }
-    public IActionResult Delete(int ? id)
+    public IActionResult Delete(int? id)
     {
-        if(id == null)
+        if (id == null)
         {
             return NotFound();
         }
         var obj = _vendedorServico.ObterVendedorPorId(id.Value);
-        if(obj == null)
+        if (obj == null)
         {
             return NotFound();
         }
@@ -56,7 +62,7 @@ public class VendedoresController : Controller
     }
     public IActionResult Details(int? id)
     {
-        if(id == null)
+        if (id == null)
         {
             return NotFound();
         }
@@ -67,26 +73,32 @@ public class VendedoresController : Controller
         }
         return View(objs);
     }
-    public IActionResult Edit(int? id) 
+    public IActionResult Edit(int? id)
     {
-        if(id == null)
+        if (id == null)
         {
             return NotFound();
         }
         var objs = _vendedorServico.ObterVendedorPorId(id.Value);
-        if(objs == null)
+        if (objs == null)
         {
             return NotFound();
         }
         List<Departamento> departamentos = _departamentoServico.TodosDepartamento();
-        VendedorFormViewModel viewModel = new VendedorFormViewModel { Vendedor = objs, Departamentos = departamentos};
+        VendedorFormViewModel viewModel = new VendedorFormViewModel { Vendedor = objs, Departamentos = departamentos };
         return View(viewModel);
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(int id, Vendedor vendedor)
     {
-        if(id != vendedor.Id)
+        if (!ModelState.IsValid)
+        {
+            var departamento = _departamentoServico.TodosDepartamento();
+            var viewModel = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = departamento };
+            return View(viewModel);
+        }
+        if (id != vendedor.Id)
         {
             return BadRequest();
         }

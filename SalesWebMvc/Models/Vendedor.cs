@@ -5,12 +5,21 @@ namespace SalesWebMvc.Models;
 public class Vendedor
 {
     public int Id { get; set; }
+    [Required]
+    [StringLength(60,MinimumLength = 3, ErrorMessage = "{0} nome tem que ter no minimo 3 letras")]
     public string Nome { get; set; }
+
+    [Required]
     [DataType(DataType.EmailAddress)]
+    [EmailAddress(ErrorMessage = "Digite um e-mail valido!")]
     public string Email { get; set; }
+
+    [Required]
     [Display(Name = "Salário Base")]
     [DisplayFormat(DataFormatString ="{0:F2}")]
     public double SalarioBase { get; set; }
+
+    [Required]
     [Display(Name = "Data Nascimento")]
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
