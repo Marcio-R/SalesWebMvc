@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Data;
 using SalesWebMvc.Models;
+using SalesWebMvc.Services.Exceptions;
 
 namespace SalesWebMvc.Services;
 
@@ -16,9 +17,9 @@ public class VendedorServico
     {
         return _context.Vendedor.ToList();
     }
-    public void Inserir(Vendedor vendedores)
+    public void Inserir(Vendedor vendedore)
     {
-        _context.Add(vendedores);
+        _context.Add(vendedore);
         _context.SaveChanges();
     }
     public Vendedor ObterVendedorPorId(int id)
@@ -38,5 +39,23 @@ public class VendedorServico
         {
             throw new ArgumentException("Vendedor não encontrado", nameof(id));
         }
+    }
+    public void Atualizar(Vendedor vendedor)
+    {
+        if (!_context.Vendedor.Any(obj => obj.Id == vendedor.Id))
+        {
+            throw new NotFoundException("Id não existe");
+        }
+        try
+        {
+            _context.Update(vendedor);
+            _context.SaveChanges();
+        }
+        catch (DbUpdateConcurrencyException e)
+        {
+
+            throw new DbUpdateConcurrencyException(e.Message);
+        }
+      
     }
 }
