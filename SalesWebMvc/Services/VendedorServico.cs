@@ -13,26 +13,26 @@ public class VendedorServico
     {
         _context = context;
     }
-    public List<Vendedor> TodosVendedores()
+    public async Task<List<Vendedor>> TodosVendedoresAsync()
     {
-        return _context.Vendedor.ToList();
+        return await _context.Vendedor.ToListAsync();
     }
-    public void Inserir(Vendedor vendedore)
+    public async Task InserirAsync(Vendedor vendedore)
     {
         _context.Add(vendedore);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
-    public Vendedor ObterVendedorPorId(int id)
+    public async Task<Vendedor> ObterVendedorPorIdAsync(int id)
     {
-        return _context.Vendedor.Include(obj => obj.Departamento).FirstOrDefault(x => x.Id == id);
+        return await _context.Vendedor.Include(obj =>  obj.Departamento).FirstOrDefaultAsync(x => x.Id == id);
     }
-    public void RemoverVendedor(int id)
+    public async Task RemoverVendedorAsync(int id)
     {
-        var obj = _context.Vendedor.Find(id);
+        var obj = await _context.Vendedor.FindAsync(id);
         if (obj != null)
         {
             _context.Vendedor.Remove(obj);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
         }
         else
@@ -40,22 +40,23 @@ public class VendedorServico
             throw new ArgumentException("Vendedor não encontrado", nameof(id));
         }
     }
-    public void Atualizar(Vendedor vendedor)
+    public async Task AtualizarAsync(Vendedor vendedor)
     {
-        if (!_context.Vendedor.Any(obj => obj.Id == vendedor.Id))
+        bool hasAny = await _context.Vendedor.AnyAsync(obj => obj.Id == vendedor.Id);
+        if (!hasAny)
         {
             throw new NotFoundException("Id não existe");
         }
         try
         {
             _context.Update(vendedor);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException e)
         {
 
             throw new DbUpdateConcurrencyException(e.Message);
         }
-      
+
     }
 }

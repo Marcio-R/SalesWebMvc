@@ -15,38 +15,38 @@ public class VendedoresController : Controller
         _departamentoServico = departamentoServico;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var list = _vendedorServico.TodosVendedores();
+        var list = await _vendedorServico.TodosVendedoresAsync();
         return View(list);
     }
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        var departamentos = _departamentoServico.TodosDepartamento();
+        var departamentos = await _departamentoServico.TodosDepartamentoasync();
         var vieModel = new VendedorFormViewModel { Departamentos = departamentos };
         return View(vieModel);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(Vendedor vendedor)
+    public async Task<IActionResult> Create(Vendedor vendedor)
     {
         if (!ModelState.IsValid)
         {
-            var departamento = _departamentoServico.TodosDepartamento();
+            var departamento = await _departamentoServico.TodosDepartamentoasync();
             var viewModel = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = departamento };
-            _vendedorServico.Inserir(vendedor);
+            await _vendedorServico.InserirAsync(vendedor);
             return RedirectToAction(nameof(Index));
         }
         return View();
     }
-    public IActionResult Delete(int? id)
+    public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
         {
             return NotFound();
         }
-        var obj = _vendedorServico.ObterVendedorPorId(id.Value);
+        var obj = await _vendedorServico.ObterVendedorPorIdAsync(id.Value);
         if (obj == null)
         {
             return NotFound();
@@ -55,46 +55,46 @@ public class VendedoresController : Controller
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        _vendedorServico.RemoverVendedor(id);
+        await _vendedorServico.RemoverVendedorAsync(id);
         return RedirectToAction(nameof(Index));
     }
-    public IActionResult Details(int? id)
+    public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
         {
             return NotFound();
         }
-        var objs = _vendedorServico.ObterVendedorPorId(id.Value);
+        var objs = await _vendedorServico.ObterVendedorPorIdAsync(id.Value);
         if (objs == null)
         {
             return NotFound();
         }
         return View(objs);
     }
-    public IActionResult Edit(int? id)
+    public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
         {
             return NotFound();
         }
-        var objs = _vendedorServico.ObterVendedorPorId(id.Value);
+        var objs =  await _vendedorServico.ObterVendedorPorIdAsync(id.Value);
         if (objs == null)
         {
             return NotFound();
         }
-        List<Departamento> departamentos = _departamentoServico.TodosDepartamento();
+        List<Departamento> departamentos = await _departamentoServico.TodosDepartamentoasync();
         VendedorFormViewModel viewModel = new VendedorFormViewModel { Vendedor = objs, Departamentos = departamentos };
         return View(viewModel);
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, Vendedor vendedor)
+    public async Task<IActionResult> Edit(int id, Vendedor vendedor)
     {
         if (!ModelState.IsValid)
         {
-            var departamento = _departamentoServico.TodosDepartamento();
+            var departamento = await _departamentoServico.TodosDepartamentoasync();
             var viewModel = new VendedorFormViewModel { Vendedor = vendedor, Departamentos = departamento };
             return View(viewModel);
         }
@@ -104,7 +104,7 @@ public class VendedoresController : Controller
         }
         try
         {
-            _vendedorServico.Atualizar(vendedor);
+            await _vendedorServico.AtualizarAsync(vendedor);
             return RedirectToAction(nameof(Index));
         }
         catch (NotFoundException)
