@@ -14,16 +14,23 @@ public class ServicoRegistroVenda
     }
     public async Task<List<RegistroVendas>> EncontrarPorDataAsync(DateTime? dataminima, DateTime? datamaxima)
     {
-        //var result = from obj in _context.RegistroVendas select obj;
-        //if (dataminima.HasValue)
-        //{
-        //    result = result.Where(x => x.Data >= dataminima.Value);
-        //}
-        //if (datamaxima.HasValue)
-        //{
-        //    result = result.Where(x => x.Data <= datamaxima.Value);
-        //}
-        //return await result.Include(x => x.Vendedor).Include(x => x.Vendedor.Departamento).OrderByDescending(x => x.Data).ToListAsync();
+       
+        var result = _context.RegistroVendas.AsQueryable();
+
+        if (dataminima.HasValue)
+            result = result.Where(x => x.Data >= dataminima.Value);
+
+        if (datamaxima.HasValue)
+            result = result.Where(x => x.Data <= datamaxima.Value);
+
+        return await result
+            .Include(x => x.Vendedor)
+            .Include(x => x.Vendedor.Departamento)
+            .OrderByDescending(x => x.Data)
+            .ToListAsync();
+    }
+    public async Task<List<IGrouping<Departamento,RegistroVendas>>> EncontrarPorDataAgrupadaAsync(DateTime? dataminima, DateTime? datamaxima)
+    {
 
         var result = _context.RegistroVendas.AsQueryable();
 
@@ -37,6 +44,7 @@ public class ServicoRegistroVenda
             .Include(x => x.Vendedor)
             .Include(x => x.Vendedor.Departamento)
             .OrderByDescending(x => x.Data)
+            .GroupBy(x => x.Vendedor.Departamento)
             .ToListAsync();
     }
 }
