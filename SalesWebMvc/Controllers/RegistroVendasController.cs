@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalesWebMvc.Services;
+using System.Collections.Generic;
 
 namespace SalesWebMvc.Controllers;
 public class RegistroVendasController : Controller
@@ -15,4 +17,5 @@ public class RegistroVendasController : Controller
     {
         return View();
     }
+
 }
